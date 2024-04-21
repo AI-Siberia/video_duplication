@@ -15,7 +15,7 @@ import datetime
 from datetime import datetime, timedelta
 from time import sleep
 from db import DataBase
-from duble_video_model import Duplicate_video_model
+from model import Duplicate_video_model
 import os
 from download_video import downloader_from_google_drive, downloader_from_YouTube
 
