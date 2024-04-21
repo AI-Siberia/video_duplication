@@ -23,7 +23,7 @@ class Duplicate_video_model:
         ssl._create_default_https_context = ssl._create_unverified_context
         locale.getpreferredencoding = lambda: "UTF-8"
 
-        self.tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=True)
+        self.tts = TTS(model_name="tts_models/multilingual/multi-dataset/your_tts", gpu=True)
 
         self.model = stable_whisper.load_model('large')
 
@@ -114,7 +114,6 @@ class Duplicate_video_model:
             })
 
         all_sound = AudioSegment.from_file(f"{user_id}/audio.mp3", format="mp3")
-        print(1)
         for i in tqdm(table):
             # print(i['text'])
             try:
@@ -167,23 +166,19 @@ class Duplicate_video_model:
 
             all_sound = sound_with_new_comment
         
-        print(2)
 
         music_sound = AudioSegment.from_file(f"{user_id}/output/audio/accompaniment.wav", format="mp3")
         output = all_sound.overlay(music_sound, position=0)
 
         output.export(f"{user_id}/all_sound.mp3", format="mp3")
 
-        print(3)
 
         # Пример использования
         input_wav = f"{user_id}/output/audio/vocals.wav"
         output_mp3 = f"{user_id}/vocals.mp3"
 
         self.convert_wav_to_mp3(input_wav, output_mp3)
-        print(4)
         os.system(
             f'ffmpeg -i {user_id}/output/audio/accompaniment.wav -i {user_id}/all_sound.mp3 -filter_complex amix=inputs=2:duration=first:dropout_transition=3 {user_id}/output.mp3 -y')
-        print(5)
         os.system(
             f'ffmpeg -i {video_file} -i {user_id}/output.mp3 -filter_complex "[0:a]volume=0.0[v0];[1:a]volume=2.0[v1];[v0][v1]amix=inputs=2:duration=first" -c:v copy -c:a aac -strict experimental {user_id}/final.mp4')
