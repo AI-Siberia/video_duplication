@@ -5,7 +5,7 @@ import config
 # import model
 # from duble_video_model import Duplicate_video_model
 from aiogram import Bot, Dispatcher, Router, types
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandObject
 from aiogram.types import Message, Video
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import FSInputFile, URLInputFile, BufferedInputFile
@@ -15,8 +15,10 @@ import datetime
 from datetime import datetime, timedelta
 from time import sleep
 from db import DataBase
-from model import Duplicate_video_model
+from duble_video_model import Duplicate_video_model
 import os
+from download_video import downloader_from_google_drive, downloader_from_YouTube
+
 
 data_base = DataBase()
 
@@ -68,25 +70,34 @@ async def command_start_handler(message: Message) -> None:
         reply_markup=builder.as_markup()
     )
 
+
 @dp.message(Command("duplicate_video"))
-async def command_start_handler(message: Message) -> None:
+async def duplicate_video(message: Message, command: CommandObject) -> None:
+    url, type_disk = command.args.split()
+    print(url, type_disk)
     language = data_base.get_language(user_id=message.chat.id)
     if language == None:
         await message.answer("You haven't selected a language! Do it in settings.")
     else:
-        file_id = message.video.file_id  # Get file id
-        file = await bot.get_file(file_id)  # Get file path
+        #file_id = message.video.file_id  # Get file id
+        #file = await bot.get_file(file_id)  # Get file path
 
         if not os.path.exists(f'{message.chat.id}/'):
             os.makedirs(f'{message.chat.id}/')
-            print('Folder was created')
+            print('--------Folder was created')
 
-        await bot.download_file(file.file_path,
-                                f"{message.chat.id}/video.mp4")
-        print('File was downloaded')
-        model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/', f"{message.chat.id}/final.mp4", message.chat.id)
-
-        print('Video was created')
+        if type_disk.lower() == 'google_drive':
+            downloader_from_google_drive(url, f"{message.chat.id}/video.mp4")
+        elif type_disk.lower() == 'youtube':
+            downloader_from_YouTube(url, f"{message.chat.id}/video.mp4")
+        #await bot.download_file(file.file_path,
+        #                        f"{message.chat.id}/video.mp4")
+        print('--------File was downloaded')
+        print('--------File if predicting')
+        model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/',
+                      f"{message.chat.id}/final.mp4", message.chat.id)
+        print('--------File if predict')
+        print('--------Video was created')
 
         while True:
             if os.path.exists(f"{message.chat.id}/final.mp4"):
@@ -106,8 +117,9 @@ async def duplicate_video(callback: types.CallbackQuery):
     ))
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     await callback.message.answer('To take advantage of duplication, you must send a video and sign\n' +
-                                ' the comment /video_duble for it, then write the language into which \n' +
-                                'you want to translate, namely, select from the list.', reply_markup=builder.as_markup())
+                                  ' the comment /duplicate_video url type(google_drive or youtube) for it, then write the language into which \n' +
+                                  'you want to translate, namely, select from the list.',
+                                  reply_markup=builder.as_markup())
 
 
 @dp.callback_query(F.data == 'buy_subscription')
@@ -134,6 +146,7 @@ async def bay_subscription(callback: types.CallbackQuery):
             start_parameter='one-month-subscription',
             payload='test-invoice-payload',
         )
+
 
 @dp.callback_query(F.data == "main")
 async def settings(callback: types.CallbackQuery):
@@ -174,11 +187,13 @@ async def settings(callback: types.CallbackQuery):
         reply_markup=builder.as_markup()
     )
 
+
 @dp.callback_query(F.data == "english")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("English is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "English")
+
 
 @dp.callback_query(F.data == "spanish")
 async def settings(callback: types.CallbackQuery):
@@ -186,11 +201,13 @@ async def settings(callback: types.CallbackQuery):
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Spanish")
 
+
 @dp.callback_query(F.data == "french")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("French is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "french")
+
 
 @dp.callback_query(F.data == "german")
 async def settings(callback: types.CallbackQuery):
@@ -198,11 +215,13 @@ async def settings(callback: types.CallbackQuery):
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "German")
 
+
 @dp.callback_query(F.data == "italian")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Italian is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Italian")
+
 
 @dp.callback_query(F.data == "portuguese")
 async def settings(callback: types.CallbackQuery):
@@ -210,11 +229,13 @@ async def settings(callback: types.CallbackQuery):
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Portuguese")
 
+
 @dp.callback_query(F.data == "polish")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Polish is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Polish")
+
 
 @dp.callback_query(F.data == "turkish")
 async def settings(callback: types.CallbackQuery):
@@ -222,11 +243,13 @@ async def settings(callback: types.CallbackQuery):
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Turkish")
 
+
 @dp.callback_query(F.data == "Russian")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Russian is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Russian")
+
 
 @dp.callback_query(F.data == "czech")
 async def settings(callback: types.CallbackQuery):
@@ -234,11 +257,13 @@ async def settings(callback: types.CallbackQuery):
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Czech")
 
+
 @dp.callback_query(F.data == "dutch")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Dutch is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Dutch")
+
 
 @dp.callback_query(F.data == "arabic")
 async def settings(callback: types.CallbackQuery):
@@ -246,11 +271,13 @@ async def settings(callback: types.CallbackQuery):
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Arabic")
 
+
 @dp.callback_query(F.data == "chinese")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Chinese is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Chinese")
+
 
 @dp.callback_query(F.data == "japanese")
 async def settings(callback: types.CallbackQuery):
@@ -258,17 +285,20 @@ async def settings(callback: types.CallbackQuery):
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Japanese")
 
+
 @dp.callback_query(F.data == "hungarian")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Hungarian is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Hungarian")
 
+
 @dp.callback_query(F.data == "korean")
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Korean is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     data_base.update_language(callback.message.chat.id, "Korean")
+
 
 # pre checkout
 @dp.pre_checkout_query(lambda query: True)
@@ -302,7 +332,6 @@ async def successful_payment(message: types.Message):
     await bot.send_message(chat_id,
                            f'Payment for the amount {message.successful_payment.total_amount // 100}'
                            f' {message.successful_payment.currency} was succesfull!', reply_markup=builder.as_markup())
-
 
 
 @dp.callback_query(F.data == "settings")
@@ -379,7 +408,9 @@ async def settings(callback: types.CallbackQuery):
         width=1
     )
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
-    await callback.message.answer(f'You can change your language here. Now your language is {data_base.get_language(user_id=callback.message.chat.id)}. Just click any button!', reply_markup=builder.as_markup())
+    await callback.message.answer(
+        f'You can change your language here. Now your language is {data_base.get_language(user_id=callback.message.chat.id)}. Just click any button!',
+        reply_markup=builder.as_markup())
 
 
 @dp.callback_query(F.data == "developer")
@@ -392,7 +423,8 @@ async def developer(callback: types.CallbackQuery):
             callback_data='main'
         )
     )
-    await callback.message.answer("This bot and AI was created by @artyomjk @EgorAndrik", reply_markup=builder.as_markup())
+    await callback.message.answer("This bot and AI was created by @artyomjk @EgorAndrik",
+                                  reply_markup=builder.as_markup())
 
 
 @dp.message(Command('data'))
