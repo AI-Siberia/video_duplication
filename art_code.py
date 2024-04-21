@@ -15,7 +15,7 @@ import datetime
 from datetime import datetime, timedelta
 from time import sleep
 from db import DataBase
-from model import Duplicate_video_model
+from duble_video_model import Duplicate_video_model
 import os
 from download_video import downloader_from_google_drive, downloader_from_YouTube
 
@@ -86,10 +86,13 @@ async def duplicate_video(message: Message, command: CommandObject) -> None:
             os.makedirs(f'{message.chat.id}/')
             print('--------Folder was created')
 
+        if os.path.exists(f"{message.chat.id}/video.mp4"):
+            os.remove(f"{message.chat.id}/video.mp4")
+
         if type_disk.lower() == 'google_drive':
             downloader_from_google_drive(url, f"{message.chat.id}/video.mp4")
         elif type_disk.lower() == 'youtube':
-            downloader_from_YouTube(url, f"{message.chat.id}/video.mp4")
+            downloader_from_YouTube(url, f"{message.chat.id}", filename='video.mp4')
         #await bot.download_file(file.file_path,
         #                        f"{message.chat.id}/video.mp4")
         print('--------File was downloaded')

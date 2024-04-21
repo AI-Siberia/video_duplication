@@ -2,11 +2,11 @@ import gdown
 from pytube import YouTube
 
 
-def downloader_from_YouTube(link: str, output_path: str) -> None:
+def downloader_from_YouTube(link: str, output_path: str, filename: str) -> None:
     youtubeObject = YouTube(link)
     youtubeObject = youtubeObject.streams.get_highest_resolution()
     try:
-        youtubeObject.download(output_path=output_path)
+        youtubeObject.download(output_path=output_path, filename=filename)
     except:
         print("An error has occurred")
     print("Download is completed successfully")
