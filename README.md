@@ -1,4 +1,4 @@
-# Automaticaly dublicate video on another language
+# Automatic duplication video on another language
 
 This is a project, which can help you to dublicate video on any language.
 
