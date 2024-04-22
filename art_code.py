@@ -73,8 +73,8 @@ async def command_start_handler(message: Message) -> None:
 
 @dp.message(Command("duplicate_video"))
 async def duplicate_video(message: Message, command: CommandObject) -> None:
-    url, type_disk = command.args.split()
-    print(url, type_disk)
+    url = command.args
+    print(url)
     language = data_base.get_language(user_id=message.chat.id)
     if language == None:
         await message.answer("You haven't selected a language! Do it in settings.")
@@ -89,9 +89,9 @@ async def duplicate_video(message: Message, command: CommandObject) -> None:
         if os.path.exists(f"{message.chat.id}/video.mp4"):
             os.remove(f"{message.chat.id}/video.mp4")
 
-        if type_disk.lower() == 'google_drive':
+        if 'drive.google.com' in url:
             downloader_from_google_drive(url, f"{message.chat.id}/video.mp4")
-        elif type_disk.lower() == 'youtube':
+        elif 'www.youtube.com' in url:
             downloader_from_YouTube(url, f"{message.chat.id}", filename='video.mp4')
         #await bot.download_file(file.file_path,
         #                        f"{message.chat.id}/video.mp4")
@@ -120,7 +120,7 @@ async def duplicate_video(callback: types.CallbackQuery):
     ))
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     await callback.message.answer('To take advantage of duplication, you must send a video and sign\n' +
-                                  ' the comment /duplicate_video url type(google_drive or youtube) for it, then write the language into which \n' +
+                                  ' the comment /duplicate_video url for it, then write the language into which \n' +
                                   'you want to translate, namely, select from the list.',
                                   reply_markup=builder.as_markup())
 
