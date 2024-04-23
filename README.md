@@ -17,7 +17,7 @@ There are not many models in the world that are capable of dubbing videos into d
 # Tasks
 
 - Make an algorithm to translate language into video
-- Wrap it up in a user-friendly interface
+- Create a user-friendly interface
 
 # Algorithm
 
