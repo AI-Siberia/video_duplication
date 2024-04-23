@@ -2,6 +2,7 @@ import asyncio
 import logging
 from re import L
 import config
+import shutil
 # import model
 # from duble_video_model import Duplicate_video_model
 from aiogram import Bot, Dispatcher, Router, types
@@ -70,9 +71,12 @@ async def command_start_handler(message: Message) -> None:
         reply_markup=builder.as_markup()
     )
 
-
 @dp.message(Command("duplicate_video"))
 async def duplicate_video(message: Message, command: CommandObject) -> None:
+    await bot.send_chat_action(
+        message.chat.id,
+        'upload_video'
+    )
     url = command.args
     print(url)
     language = data_base.get_language(user_id=message.chat.id)
@@ -91,14 +95,14 @@ async def duplicate_video(message: Message, command: CommandObject) -> None:
 
         if 'drive.google.com' in url:
             downloader_from_google_drive(url, f"{message.chat.id}/video.mp4")
-        elif 'www.youtube.com' in url:
+        elif 'youtube.com' in url or 'youtu.be' in url:
             downloader_from_YouTube(url, f"{message.chat.id}", filename='video.mp4')
         #await bot.download_file(file.file_path,
         #                        f"{message.chat.id}/video.mp4")
         print('--------File was downloaded')
         print('--------File if predicting')
         model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/',
-                      f"{message.chat.id}/final.mp4", message.chat.id)
+                    f"{message.chat.id}/final.mp4", message.chat.id)
         print('--------File if predict')
         print('--------Video was created')
 
@@ -109,7 +113,41 @@ async def duplicate_video(message: Message, command: CommandObject) -> None:
             else:
                 pass
         await bot.send_video(message.chat.id, FSInputFile(f"{message.chat.id}/final.mp4"))
+        shutil.rmtree(str(message.chat.id))
 
+
+@dp.message(Command("duplicate"))
+async def command_start_handler(message: Message) -> None:
+    language = data_base.get_language(user_id=message.chat.id)
+    await bot.send_chat_action(
+        message.chat.id,
+        'upload_video'
+    )
+    if language == None:
+        await message.answer("You haven't selected a language! Do it in settings.")
+    else:
+        file_id = message.video.file_id  # Get file id
+        file = await bot.get_file(file_id)  # Get file path
+
+        if not os.path.exists(f'{message.chat.id}/'):
+            os.makedirs(f'{message.chat.id}/')
+            print('Folder was created')
+
+        await bot.download_file(file.file_path,
+                                f"{message.chat.id}/video.mp4")
+        print('File was downloaded')
+        model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/', f"{message.chat.id}/final.mp4", message.chat.id)
+
+        print('Video was created')
+
+        while True:
+            if os.path.exists(f"{message.chat.id}/final.mp4"):
+                print('find file')
+                break
+            else:
+                pass
+        await bot.send_video(message.chat.id, FSInputFile(f"{message.chat.id}/final.mp4"))
+        shutil.rmtree(str(message.chat.id))
 
 @dp.callback_query(F.data == "video_duplicate")
 async def duplicate_video(callback: types.CallbackQuery):
@@ -279,7 +317,7 @@ async def settings(callback: types.CallbackQuery):
 async def settings(callback: types.CallbackQuery):
     await callback.message.answer("Chinese is selected language!")
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
-    data_base.update_language(callback.message.chat.id, "Chinese")
+    data_base.update_language(callback.message.chat.id, "Chinese (Simplified)")
 
 
 @dp.callback_query(F.data == "japanese")
