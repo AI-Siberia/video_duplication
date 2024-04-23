@@ -23,7 +23,7 @@ class Duplicate_video_model:
         ssl._create_default_https_context = ssl._create_unverified_context
         locale.getpreferredencoding = lambda: "UTF-8"
 
-        self.tts = TTS(model_name="tts_models/multilingual/multi-dataset/your_tts", gpu=True)
+        self.tts = TTS(model_name="xtts", gpu=True)
 
         self.model = stable_whisper.load_model('large')
 
@@ -186,4 +186,4 @@ class Duplicate_video_model:
             f'ffmpeg -i {user_id}/output/audio/accompaniment.wav -i {user_id}/all_sound.mp3 -filter_complex amix=inputs=2:duration=first:dropout_transition=3 {user_id}/output.mp3 -y')
         print(5)
         os.system(
-            f'ffmpeg -i {video_file} -i {user_id}/output.mp3 -filter_complex "[0:a]volume=0.0[v0];[1:a]volume=2.0[v1];[v0][v1]amix=inputs=2:duration=first" -c:v copy -c:a aac -strict experimental {user_id}/final.mp4')
+            f'ffmpeg -i {video_file} -i {user_id}/output.mp3 -filter_complex "[0:a]volume=0.0[v0];[1:a]volume=2.0[v1];[v0][v1]amix=inputs=2:duration=first" -c:v copy -c:a aac -strict experimental {user_id}/final.mp4 -y')
