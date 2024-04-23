@@ -73,81 +73,96 @@ async def command_start_handler(message: Message) -> None:
 
 @dp.message(Command("duplicate_video"))
 async def duplicate_video(message: Message, command: CommandObject) -> None:
-    await bot.send_chat_action(
-        message.chat.id,
-        'upload_video'
-    )
-    url = command.args
-    print(url)
-    language = data_base.get_language(user_id=message.chat.id)
-    if language == None:
-        await message.answer("You haven't selected a language! Do it in settings.")
-    else:
-        #file_id = message.video.file_id  # Get file id
-        #file = await bot.get_file(file_id)  # Get file path
-
-        if not os.path.exists(f'{message.chat.id}/'):
-            os.makedirs(f'{message.chat.id}/')
-            print('--------Folder was created')
-
-        if os.path.exists(f"{message.chat.id}/video.mp4"):
-            os.remove(f"{message.chat.id}/video.mp4")
-
-        if 'drive.google.com' in url:
-            downloader_from_google_drive(url, f"{message.chat.id}/video.mp4")
-        elif 'youtube.com' in url or 'youtu.be' in url:
-            downloader_from_YouTube(url, f"{message.chat.id}", filename='video.mp4')
-        #await bot.download_file(file.file_path,
-        #                        f"{message.chat.id}/video.mp4")
-        print('--------File was downloaded')
-        print('--------File if predicting')
-        model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/',
-                    f"{message.chat.id}/final.mp4", message.chat.id)
-        print('--------File if predict')
-        print('--------Video was created')
-
-        while True:
-            if os.path.exists(f"{message.chat.id}/final.mp4"):
-                print('find file')
-                break
+    try:
+        await bot.send_chat_action(
+            message.chat.id,
+            'upload_video'
+        )
+        url = command.args
+        if url == None:
+            await message.answer('Make sure you attach the video to the team!')
+        else:
+            print(url)
+            language = data_base.get_language(user_id=message.chat.id)
+            if language == None:
+                await message.answer("You haven't selected a language! Do it in settings.")
             else:
-                pass
-        await bot.send_video(message.chat.id, FSInputFile(f"{message.chat.id}/final.mp4"))
-        shutil.rmtree(str(message.chat.id))
+                #file_id = message.video.file_id  # Get file id
+                #file = await bot.get_file(file_id)  # Get file path
+
+                if not os.path.exists(f'{message.chat.id}/'):
+                    os.makedirs(f'{message.chat.id}/')
+                    print('--------Folder was created')
+
+                if os.path.exists(f"{message.chat.id}/video.mp4"):
+                    os.remove(f"{message.chat.id}/video.mp4")
+
+                if 'drive.google.com' in url:
+                    downloader_from_google_drive(url, f"{message.chat.id}/video.mp4")
+                elif 'youtube.com' in url or 'youtu.be' in url:
+                    downloader_from_YouTube(url, f"{message.chat.id}", filename='video.mp4')
+                #await bot.download_file(file.file_path,
+                #                        f"{message.chat.id}/video.mp4")
+                print('--------File was downloaded')
+                print('--------File if predicting')
+                model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/',
+                            f"{message.chat.id}/final.mp4", message.chat.id)
+                print('--------File if predict')
+                print('--------Video was created')
+
+                while True:
+                    if os.path.exists(f"{message.chat.id}/final.mp4"):
+                        print('find file')
+                        break
+                    else:
+                        pass
+                await bot.send_video(message.chat.id, FSInputFile(f"{message.chat.id}/final.mp4"))
+                shutil.rmtree(str(message.chat.id))
+    except:
+        try:
+            shutil.rmtree(str(message.chat.id))
+        except:
+            await message.answer('Make sure you attach the video to the team!')
 
 
 @dp.message(Command("duplicate"))
 async def command_start_handler(message: Message) -> None:
-    language = data_base.get_language(user_id=message.chat.id)
-    await bot.send_chat_action(
-        message.chat.id,
-        'upload_video'
-    )
-    if language == None:
-        await message.answer("You haven't selected a language! Do it in settings.")
-    else:
-        file_id = message.video.file_id  # Get file id
-        file = await bot.get_file(file_id)  # Get file path
+    try:
+        language = data_base.get_language(user_id=message.chat.id)
+        await bot.send_chat_action(
+            message.chat.id,
+            'upload_video'
+        )
+        if language == None:
+            await message.answer("You haven't selected a language! Do it in settings.")
+        else:
+            file_id = message.video.file_id  # Get file id
+            file = await bot.get_file(file_id)  # Get file path
 
-        if not os.path.exists(f'{message.chat.id}/'):
-            os.makedirs(f'{message.chat.id}/')
-            print('Folder was created')
+            if not os.path.exists(f'{message.chat.id}/'):
+                os.makedirs(f'{message.chat.id}/')
+                print('Folder was created')
 
-        await bot.download_file(file.file_path,
-                                f"{message.chat.id}/video.mp4")
-        print('File was downloaded')
-        model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/', f"{message.chat.id}/final.mp4", message.chat.id)
+            await bot.download_file(file.file_path,
+                                    f"{message.chat.id}/video.mp4")
+            print('File was downloaded')
+            model.predict(f"{message.chat.id}/video.mp4", language, f'{message.chat.id}/video_{message.chat.id}/', f"{message.chat.id}/final.mp4", message.chat.id)
 
-        print('Video was created')
+            print('Video was created')
 
-        while True:
-            if os.path.exists(f"{message.chat.id}/final.mp4"):
-                print('find file')
-                break
-            else:
-                pass
-        await bot.send_video(message.chat.id, FSInputFile(f"{message.chat.id}/final.mp4"))
-        shutil.rmtree(str(message.chat.id))
+            while True:
+                if os.path.exists(f"{message.chat.id}/final.mp4"):
+                    print('find file')
+                    break
+                else:
+                    pass
+            await bot.send_video(message.chat.id, FSInputFile(f"{message.chat.id}/final.mp4"))
+            shutil.rmtree(str(message.chat.id))
+    except:
+        try:
+            shutil.rmtree(str(message.chat.id))
+        except:
+            await message.answer('Make sure you attach the video to the team!')
 
 @dp.message(Command("developers"))
 async def developer(message: Message):
@@ -261,7 +276,6 @@ async def bay_subscription(message: Message):
         print(message)
         # if config.PAYMENST_TOKEN.split(':')[1] == 'TEST':
         #     await bot.send_message(chat_id, 'Test payment!!!')
-        await bot.delete_message(message.chat.id, message.message_id)
         await bot.send_invoice(
             chat_id,
             title='subscription to video duplication',
