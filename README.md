@@ -6,6 +6,17 @@ This is a project, which can help you to dublicate video on any language.
 
 A huge number of foreigners receiving education in Russia have poor or no knowledge of the Russian language. This project will help all people who want to study in Russia to receive a quality education. I present to you a solution that, using artificial intelligence and machine learning technologies, duplicates video lectures into any language while preserving the true voice of the author.
 
+# Relevance
+
+# Target
+
+- Automate video translation into different languages.
+
+# Tasks
+
+- Make an algorithm to translate language into video
+- Wrap it up in a user-friendly interface
+
 # Algorithm
 
 ![](https://i.imgur.com/RbkfcuZ.png)
