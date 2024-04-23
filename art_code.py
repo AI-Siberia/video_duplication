@@ -149,6 +149,132 @@ async def command_start_handler(message: Message) -> None:
         await bot.send_video(message.chat.id, FSInputFile(f"{message.chat.id}/final.mp4"))
         shutil.rmtree(str(message.chat.id))
 
+@dp.message(Command("developers"))
+async def developer(message: Message):
+    await message.answer("This bot and AI was created by @artyomjk @EgorAndrik")
+
+@dp.message(Command("settings"))
+async def settings(message: Message):
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        types.InlineKeyboardButton(
+            text="English 🇺🇸",
+            callback_data="english"),
+        types.InlineKeyboardButton(
+            text="Spanish 🇪🇸",
+            callback_data="spanish"),
+        types.InlineKeyboardButton(
+            text="French 🇫🇷",
+            callback_data="french"),
+        types.InlineKeyboardButton(
+            text="German 🇩🇪",
+            callback_data="german"),
+        width=4
+    )
+    builder.row(
+        types.InlineKeyboardButton(
+            text="Italian 🇮🇹",
+            callback_data="italian"),
+        types.InlineKeyboardButton(
+            text="Portuguese 🇵🇹",
+            callback_data="portuguese"),
+        types.InlineKeyboardButton(
+            text="Polish 🇵🇱",
+            callback_data="polish"),
+        types.InlineKeyboardButton(
+            text="Turkish 🇹🇷",
+            callback_data="turkish"),
+        width=4
+    )
+
+    builder.row(
+        types.InlineKeyboardButton(
+            text="Russian 🇷🇺",
+            callback_data="russian"),
+        types.InlineKeyboardButton(
+            text="Dutch 🇩🇰",
+            callback_data="dutch"),
+        types.InlineKeyboardButton(
+            text="Czech 🇨🇿",
+            callback_data="czech"),
+        types.InlineKeyboardButton(
+            text="Arabic 🇦🇪",
+            callback_data="arabic"),
+        width=4
+    )
+
+    builder.row(
+        types.InlineKeyboardButton(
+            text="Chinese 🇨🇳",
+            callback_data="chinese"),
+        types.InlineKeyboardButton(
+            text="Japanese 🇯🇵",
+            callback_data="japanese"),
+        types.InlineKeyboardButton(
+            text="Hungarian 🇭🇺",
+            callback_data="hungarian"),
+        types.InlineKeyboardButton(
+            text="Korean 🇰🇷",
+            callback_data="korean"),
+        width=4
+    )
+
+    builder.row(
+        types.InlineKeyboardButton(
+            text='Back 🔙',
+            callback_data='main'
+        ),
+        width=1
+    )
+    flags = {
+        "None": "",
+        "English": "🇺🇸",
+        "Spanish": "🇪🇸",
+        "French": "🇫🇷",
+        "German": "🇩🇪",
+        "Italian": "🇮🇹",
+        "Portuguese": "🇵🇹",
+        "Polish": "🇵🇱",
+        "Turkish": "🇹🇷",
+        "Russian": "🇷🇺",
+        "Dutch": "🇩🇰",
+        "Czech": "🇨🇿",
+        "Arabic": "🇦🇪",
+        "Chinese": "🇨🇳",
+        "Japanese": "🇯🇵",
+        "Hungarian": "🇭🇺",
+        "Korean": "🇰🇷"
+    }
+    language = data_base.get_language(user_id=message.chat.id)
+    await message.answer(
+        f'You can change your language here. Now your language is {language} {flags[str(language)]}. Just click any button!',
+        reply_markup=builder.as_markup())
+    
+@dp.message(Command('buy_subscription'))
+async def bay_subscription(message: Message):
+    chat_id = message.chat.id
+    print(chat_id)
+
+    if data_base.get_have_subscription(user_id=chat_id):
+        await bot.send_message(chat_id, 'You already have a subscription')
+    else:
+        print(message)
+        # if config.PAYMENST_TOKEN.split(':')[1] == 'TEST':
+        #     await bot.send_message(chat_id, 'Test payment!!!')
+        await bot.delete_message(message.chat.id, message.message_id)
+        await bot.send_invoice(
+            chat_id,
+            title='subscription to video duplication',
+            description='Activation of subscription for 1 month',
+            provider_token=config.PAYMENST_TOKEN,
+            currency='rub',
+            # photo_url='https://upload.wikimedia.org/wikipedia/commons/c/ce/Noaa-walrus22.jpg',
+            is_flexible=False,
+            prices=[PRICE],
+            start_parameter='one-month-subscription',
+            payload='test-invoice-payload',
+        )
+
 @dp.callback_query(F.data == "video_duplicate")
 async def duplicate_video(callback: types.CallbackQuery):
     builder = InlineKeyboardBuilder()
@@ -448,9 +574,29 @@ async def settings(callback: types.CallbackQuery):
         ),
         width=1
     )
+    flags = {
+        "None": "",
+        "English": "🇺🇸",
+        "Spanish": "🇪🇸",
+        "French": "🇫🇷",
+        "German": "🇩🇪",
+        "Italian": "🇮🇹",
+        "Portuguese": "🇵🇹",
+        "Polish": "🇵🇱",
+        "Turkish": "🇹🇷",
+        "Russian": "🇷🇺",
+        "Dutch": "🇩🇰",
+        "Czech": "🇨🇿",
+        "Arabic": "🇦🇪",
+        "Chinese": "🇨🇳",
+        "Japanese": "🇯🇵",
+        "Hungarian": "🇭🇺",
+        "Korean": "🇰🇷"
+    }
+    language = data_base.get_language(user_id=callback.message.chat.id)
     await bot.delete_message(callback.message.chat.id, callback.message.message_id)
     await callback.message.answer(
-        f'You can change your language here. Now your language is {data_base.get_language(user_id=callback.message.chat.id)}. Just click any button!',
+        f'You can change your language here. Now your language is {language} {flags[str(language)]}. Just click any button!',
         reply_markup=builder.as_markup())
 
 
