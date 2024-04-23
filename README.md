@@ -8,6 +8,8 @@ There are many different languages ​​in the world and all people speak diffe
 
 # Relevance
 
+There are not many models in the world that are capable of dubbing videos into different languages ​​with voice cloning, especially free ones. Many of them are blocked on the territory of the Russian Federation. Our project is a Russian analogue, which is absolutely free to use and has open source, which makes it possible to use it anywhere
+
 # Target
 
 - Automate video translation into different languages.
