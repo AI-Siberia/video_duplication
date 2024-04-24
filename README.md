@@ -4,9 +4,9 @@ This is a project, which can help you to dublicate video on any language.
 
  # Other languages ​​to read
 
-- [Russian](../KINDS_README/RUSSIAN_README.md)
-- [Spanish](../KINDS_README/ESPAÑOL_README.md)
-- [English](../README.md)
+- [Russian](KINDS_README/RUSSIAN_README.md)
+- [Spanish](KINDS_README/ESPAÑOL_README.md)
+- [English](README.md)
 
 # Direction
 
