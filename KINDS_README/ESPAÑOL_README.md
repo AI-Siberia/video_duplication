@@ -40,6 +40,19 @@ No hay muchos modelos en el mundo capaces de doblar videos en diferentes idiomas
 - Crear un algoritmo para traducir lenguaje a video
 - Crear una interfaz de usuario amigable
 
+
+# Tarjeta de proyecto
+
+[Enlace](https://docs.google.com/document/d/1TYL-o58uvGIJ0XTXbSSiQqZQaZgPswh1OABB_MCTMJQ/edit?usp=sharing)
+
+# Video de pantalla
+
+[Video](https://youtu.be/VPaTiq58Fqg)
+
+# Ejemplo
+
+[Video](https://youtu.be/4UnkZdkrrrg)
+
 # Algoritmo
 
 ![](https://i.imgur.com/RbkfcuZ.png)
