@@ -40,6 +40,10 @@ No hay muchos modelos en el mundo capaces de doblar videos en diferentes idiomas
 - Crear un algoritmo para traducir lenguaje a video
 - Crear una interfaz de usuario amigable
 
+# Algoritmo
+
+![](https://i.imgur.com/RbkfcuZ.png)
+
 
 # Tarjeta de proyecto
 
@@ -52,7 +56,3 @@ No hay muchos modelos en el mundo capaces de doblar videos en diferentes idiomas
 # Ejemplo
 
 [Video](https://youtu.be/4UnkZdkrrrg)
-
-# Algoritmo
-
-![](https://i.imgur.com/RbkfcuZ.png)
