@@ -44,10 +44,6 @@ There are not many models in the world that are capable of dubbing videos into d
 
 ![](https://i.imgur.com/RbkfcuZ.png)
 
-# Card of project
-
-[Link](https://docs.google.com/document/d/1TYL-o58uvGIJ0XTXbSSiQqZQaZgPswh1OABB_MCTMJQ/edit?usp=sharing)
-
 # Screen Cast
 
 [Video](https://youtu.be/VPaTiq58Fqg)
