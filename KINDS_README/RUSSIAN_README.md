@@ -45,10 +45,6 @@
 ![](https://i.imgur.com/RbkfcuZ.png)
 
 
-# Карточка проекта
-
-[Ссылка](https://docs.google.com/document/d/1TYL-o58uvGIJ0XTXbSSiQqZQaZgPswh1OABB_MCTMJQ/edit?usp=sharing)
-
 # Видео демонстрация
 
 [Видео](https://youtu.be/VPaTiq58Fqg)
