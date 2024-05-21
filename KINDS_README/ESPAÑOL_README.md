@@ -45,10 +45,6 @@ No hay muchos modelos en el mundo capaces de doblar videos en diferentes idiomas
 ![](https://i.imgur.com/RbkfcuZ.png)
 
 
-# Tarjeta de proyecto
-
-[Enlace](https://docs.google.com/document/d/1TYL-o58uvGIJ0XTXbSSiQqZQaZgPswh1OABB_MCTMJQ/edit?usp=sharing)
-
 # Video de pantalla
 
 [Video](https://youtu.be/VPaTiq58Fqg)
